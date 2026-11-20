@@ -1,0 +1,13 @@
+[project]
+name = "adk"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Sandeep-singh-99", email = "sandeep.necoder@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "google-adk>=2.15.0",
+]
+
