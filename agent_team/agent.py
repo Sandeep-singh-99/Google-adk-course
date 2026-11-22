@@ -1,5 +1,5 @@
-from unicodedata import name
 from google.adk.agents.llm_agent import Agent
+from google.genai import types
 
 """
 Create a weather tool
@@ -42,7 +42,7 @@ def get_weather(city: str) -> dict:
 
 weather_agent = Agent(
     name="Weather_agent",
-    model="gemini-3.5-flash",
+    model="gemini-3.8-flash",
     description="Provides weather information for cities.",
     instruction="""
     You are a helpful assistant.
@@ -80,7 +80,7 @@ def say_goodbye() -> str:
 
 greeting_agent = Agent(
     name="greeting_agent",
-    model="gemini-3.5-flash",
+    model="gemini-3.8-flash",
     description="Handles greeting and Hello messages.",
     instruction="""
     You are a Greeting Agent.
@@ -94,7 +94,7 @@ greeting_agent = Agent(
 
 farewell_agent = Agent(
     name="farewell_agent",
-    model="gemini-3.5-flash",
+    model="gemini-3.8-flash",
     description="Handles goodbye and farewell messages.",
     instruction="""
     You are a Farewell Agent.
@@ -106,7 +106,7 @@ farewell_agent = Agent(
 )
 
 root_agent = Agent(
-    model='gemini-3.5-flash',
+    model='gemini-3.8-flash',
     name='root_agent',
     description='Main coordinator for weather, greetings and farewells.',
     instruction=""" 
@@ -115,7 +115,7 @@ root_agent = Agent(
     You have three responsibilities.
 
     1. Weather:
-       Handle weather questions using get_weather.
+       Handle weather questions using weather_agent.
 
     2. Greetings:
        Delegate greetings to greeting_agent.
@@ -132,5 +132,17 @@ root_agent = Agent(
         weather_agent,
         greeting_agent,
         farewell_agent
-    ]
+    ],
+
+    generate_content_config=types.GenerateContentConfig(
+        http_options=types.HttpOptions(
+            retry_options=types.HttpRetryOptions(
+                attempts=3,
+                initial_delay=2,
+                max_delay=30,
+                exp_base=2,
+                http_status_codes=[429, 500, 502, 503, 504]
+            )
+        )
+    )
 )
