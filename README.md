@@ -42,11 +42,23 @@ Replace `calculate_agent` with another interactive example from the table below.
 | `calculate_agent` | Calls a Python function to add two integers. | What is 12 plus 30? |
 | `google_agent` | Uses the built-in Google Search tool to look up or verify information. | What is the latest stable Python release? |
 | `multi_tool_agent` | Uses separate tools for sample weather and the current local time. Both tools support New York. | What time is it in New York? |
-| `agent_team` | Delegates requests to weather, greeting, and farewell specialists. Sample weather covers Kanpur, Delhi, London, and Tokyo. | What's the weather in Tokyo? |
+| `agent_team` | Demonstrates delegation, session state in a weather tool, and a keyword check before the coordinator calls the model. | What's the weather in Tokyo? |
 | `neocoder_bot` | Answers general questions with custom Gemini generation settings. | Explain Python list comprehensions. |
 | `runner_example` | Sends a fixed math prompt through ADK's `Runner` with an in-memory session and prints the final response. | Run the script below. |
 
 On Windows, the New York time tool may need the `tzdata` package. Supply it for that run with `uv run --with tzdata adk run multi_tool_agent`.
+
+## Agent team
+
+```sh
+uv run adk run agent_team
+```
+
+The coordinator delegates requests to weather, greeting, and farewell specialists. Try “Hi, my name is Sam,” “What's the weather in Tokyo?” and “Goodbye.”
+
+- **Weather specialist.** Its tool returns sample conditions in Celsius for Kanpur, Delhi, London, and Tokyo.
+- **Coordinator weather tool.** Its separate sample data covers London, New York, and Tokyo. It reads `temperature_unit` from session state, defaults to Celsius, and saves a successful lookup as `last_city`. To try Fahrenheit, initialize the session with `temperature_unit` set to `Fahrenheit`. The example currently exposes no chat command for changing the preference.
+- **Input callback.** In a fresh session, send `BLOCK` to see the coordinator return a blocked response before calling Gemini. The check matches that substring case-insensitively in the latest user message and sets `request_blocked` in session state. The callback applies to coordinator model calls.
 
 ## Run the Python script
 

@@ -1,6 +1,7 @@
 from google.adk.agents.llm_agent import Agent
 from google.genai import types
 from agent_team.main import get_weather_stateful
+from agent_team.guardrail import input_guardrail
 
 """
 Create a weather tool
@@ -135,6 +136,10 @@ root_agent = Agent(
         greeting_agent,
         farewell_agent
     ],
+
+    before_model_callback=input_guardrail,
+    
+    output_key="last_weather_response",
 
     generate_content_config=types.GenerateContentConfig(
         http_options=types.HttpOptions(
