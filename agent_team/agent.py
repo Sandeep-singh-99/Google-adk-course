@@ -1,5 +1,6 @@
 from google.adk.agents.llm_agent import Agent
 from google.genai import types
+from agent_team.main import get_weather_stateful
 
 """
 Create a weather tool
@@ -127,6 +128,7 @@ root_agent = Agent(
 
     Do not use the weather tool for greetings
     """,
+    tools=[get_weather_stateful],
 
     sub_agents=[
         weather_agent,
